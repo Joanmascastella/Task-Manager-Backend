@@ -152,6 +152,7 @@ class UserController extends Controller
             "message" => "Successful login.",
             "jwt" => $jwt,
             "username" => $user->email,
+            "role" =>$user->role,
             "expireAt" => $expire
         );
     }
