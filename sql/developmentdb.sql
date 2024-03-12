@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Gegenereerd op: 25 jan 2022 om 13:39
--- Serverversie: 10.6.4-MariaDB-1:10.6.4+maria~focal
--- PHP-versie: 7.4.25
+-- Generation Time: Mar 12, 2024 at 06:45 PM
+-- Server version: 11.3.2-MariaDB-1:11.3.2+maria~ubu2204
+-- PHP Version: 8.2.16
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,117 +24,123 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `user`
+-- Table structure for table `Lists`
 --
 
-CREATE TABLE `user` (
-  `id` int(11) NOT NULL,
-  `username` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
-INSERT INTO `user` (`id`, `username`, `password`, `email`) VALUES
-(1, 'username', '$2y$10$DQlV0u9mFmtOWsOdxXX9H.4kgzEB3E8o97s.S.Pdy4klUAdBvtVh.', 'username@password.com');
-
-
-ALTER TABLE `user`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `username` (`username`);
-
-ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-COMMIT;
+CREATE TABLE `Lists` (
+  `list_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `listname` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `category`
+-- Table structure for table `Tasks`
 --
 
-
-
-CREATE TABLE `category` (
-  `id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Gegevens worden geëxporteerd voor tabel `category`
---
-
-INSERT INTO `category` (`id`, `name`) VALUES
-(1, 'bread'),
-(3, 'vegetables');
+CREATE TABLE `Tasks` (
+  `task_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `deadline` datetime DEFAULT NULL,
+  `status` enum('completed','pending') DEFAULT 'pending',
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `list_id` int(11) DEFAULT NULL,
+  `time_elapsed` int(11) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabelstructuur voor tabel `product`
+-- Table structure for table `Users`
 --
 
-CREATE TABLE `product` (
-  `id` int(11) NOT NULL,
+CREATE TABLE `Users` (
+  `user_id` int(11) NOT NULL,
+  `email` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `price` decimal(10,2) NOT NULL,
-  `description` varchar(8000) NOT NULL,
-  `image` varchar(255) NOT NULL,
-  `category_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `password_hash` varchar(255) NOT NULL,
+  `role` enum('user','admin') NOT NULL DEFAULT 'user'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Gegevens worden geëxporteerd voor tabel `product`
+-- Dumping data for table `Users`
 --
 
-INSERT INTO `product` (`id`, `name`, `price`, `description`, `image`, `category_id`) VALUES
-(1, 'Ciabatta', '2.50', 'Ciabatta (which translates to slipper!) is an Italian bread made with wheat flour, salt, yeast, and water. Though it\'s texture and crust vary slightly throughout Italy, the essential ingredients remain the same. Ciabatta is best for sandwiches and paninis, naturally.', 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/957759184-1529703875.jpg?crop=1.00xw:0.645xh;0,0.104xh&resize=980:*', 1),
-(2, 'Whole Wheat Bread', '2.00', 'Unlike white bread, whole-wheat bread is made from flour that uses almost the entire wheat grain—with the bran and germ in tact. This means more nutrients and fiber per slice! ', 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/whole-wheat-bread-horizontal-1-jpg-1590195849.jpg?crop=0.735xw:0.735xh;0.187xw,0.128xh&resize=980:*', 1),
-(3, 'Artichoke', '1.50', 'Artichokes contain an unusual organic acid called cynarin which affects taste and may be the reason why water appears to taste sweet after eating artichokes. The flavour of wine is similarly altered and many wine experts believe that wine shouldn’t accompany artichokes.', 'https://www.vegetables.co.nz/assets/vegetables/_resampled/FillWyI0MDAiLCIzMDAiXQ/artichokes-globe.png', 3),
-(4, 'Asparagus ', '3.00', 'Asparagus originated in the Eastern Mediterranean and was a favourite of the Greeks and Romans who used it as a medicine. Varieties of asparagus grow wild in parts of Europe, Turkey, Africa, Middle East and Asia.', 'https://www.vegetables.co.nz/assets/vegetables/_resampled/FillWyI0MDAiLCIzMDAiXQ/asparagus.png', 3);
+INSERT INTO `Users` (`user_id`, `email`, `name`, `password_hash`, `role`) VALUES
+(6, 'joan.idevelop@gmail.com', 'admin', '$2y$10$AkY.0gqaJzYiHowSPVJJTODU0MJTLBmHPHGXQuKP6YlqsqWz3aaAi', 'admin'),
+(8, 'testt@gmail.com', 'testas', '$2y$10$ZMF9G6ovdDw2Qs.r97b3deMOfnj34nyvSv5e0Y..vZhRc2xzKFMgi', 'user'),
+(9, 'm@gmail.com', 'Marta', '$2y$10$/E3lqUFAYmcbDvhOQnMzs.NVE3ZJ8Zb4gYBmOXFxwCNuX7V9jJX2G', 'user');
 
 --
--- Indexen voor geëxporteerde tabellen
+-- Indexes for dumped tables
 --
 
 --
--- Indexen voor tabel `category`
+-- Indexes for table `Lists`
 --
-ALTER TABLE `category`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE `Lists`
+  ADD PRIMARY KEY (`list_id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
--- Indexen voor tabel `product`
+-- Indexes for table `Tasks`
 --
-ALTER TABLE `product`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `product_category` (`category_id`);
+ALTER TABLE `Tasks`
+  ADD PRIMARY KEY (`task_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `list_id` (`list_id`);
 
 --
--- AUTO_INCREMENT voor geëxporteerde tabellen
+-- Indexes for table `Users`
 --
+ALTER TABLE `Users`
+  ADD PRIMARY KEY (`user_id`),
+  ADD UNIQUE KEY `email` (`email`);
 
 --
--- AUTO_INCREMENT voor een tabel `category`
---
-ALTER TABLE `category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT voor een tabel `product`
---
-ALTER TABLE `product`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- Beperkingen voor geëxporteerde tabellen
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- Beperkingen voor tabel `product`
+-- AUTO_INCREMENT for table `Lists`
 --
-ALTER TABLE `product`
-  ADD CONSTRAINT `product_category` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`);
+ALTER TABLE `Lists`
+  MODIFY `list_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `Tasks`
+--
+ALTER TABLE `Tasks`
+  MODIFY `task_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `Users`
+--
+ALTER TABLE `Users`
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `Lists`
+--
+ALTER TABLE `Lists`
+  ADD CONSTRAINT `Lists_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`);
+
+--
+-- Constraints for table `Tasks`
+--
+ALTER TABLE `Tasks`
+  ADD CONSTRAINT `Tasks_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`),
+  ADD CONSTRAINT `Tasks_ibfk_2` FOREIGN KEY (`list_id`) REFERENCES `Lists` (`list_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
