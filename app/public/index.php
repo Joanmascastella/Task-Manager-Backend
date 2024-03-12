@@ -13,19 +13,26 @@ $router = new \Bramus\Router\Router();
 
 $router->setNamespace('Controllers');
 
-// routes for the products endpoint
-$router->get('/products', 'ProductController@getAll');
-$router->get('/products/(\d+)', 'ProductController@getOne');
-$router->post('/products', 'ProductController@create');
-$router->put('/products/(\d+)', 'ProductController@update');
-$router->delete('/products/(\d+)', 'ProductController@delete');
+// User Management endpoints
+$router->post('/register', 'UserController@register');
+$router->post('/login', 'UserController@login');
+$router->put('/user/update', 'UserController@update');
+$router->delete('/user/delete', 'UserController@delete');
 
-// routes for the categories endpoint
-$router->get('/categories', 'CategoryController@getAll');
-$router->get('/categories/(\d+)', 'CategoryController@getOne');
-$router->post('/categories', 'CategoryController@create');
-$router->put('/categories/(\d+)', 'CategoryController@update');
-$router->delete('/categories/(\d+)', 'CategoryController@delete');
+// Task Management endpoints
+$router->post('/tasks', 'TaskController@create');
+$router->get('/tasks', 'TaskController@getAll');
+$router->get('/tasks/(\d+)', 'TaskController@getOne');
+$router->put('/tasks/(\d+)', 'TaskController@update');
+$router->delete('/tasks/(\d+)', 'TaskController@delete');
+$router->post('/tasks/(\d+)/complete', 'TaskController@complete');
+
+// Activity and Goals endpoints
+$router->get('/user/daily-goal', 'ActivityController@getDailyGoal');
+$router->put('/user/daily-goal', 'ActivityController@updateDailyGoal');
+$router->get('/user/streak', 'ActivityController@getStreak');
+$router->get('/user/activity-log', 'ActivityController@getActivityLog');
 
 // Run it!
 $router->run();
+?>
