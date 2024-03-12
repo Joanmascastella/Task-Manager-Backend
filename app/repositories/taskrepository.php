@@ -18,12 +18,12 @@ class TaskRepository extends Repository
             $stmt->bindParam(':description', $task->description);
             $stmt->bindParam(':deadline', $task->deadline);
             $stmt->bindParam(':status', $task->status);
-            $stmt->bindParam(':list_id', $task->list_id); 
+            $stmt->bindParam(':list_id', $task->list_id);
             $stmt->execute();
 
             return $this->connection->lastInsertId();
         } catch (PDOException $e) {
-            
+
         }
     }
 
@@ -37,7 +37,7 @@ class TaskRepository extends Repository
 
             return $stmt->fetchAll(PDO::FETCH_CLASS, 'Models\Task');
         } catch (PDOException $e) {
-        
+
         }
     }
 
@@ -50,7 +50,7 @@ class TaskRepository extends Repository
             $stmt->bindParam(':description', $task->description);
             $stmt->bindParam(':deadline', $task->deadline);
             $stmt->bindParam(':status', $task->status);
-            $stmt->bindParam(':list_id', $task->list_id); 
+            $stmt->bindParam(':list_id', $task->list_id);
             $stmt->bindParam(':task_id', $task->task_id);
             $stmt->execute();
 
@@ -106,6 +106,20 @@ class TaskRepository extends Repository
             }
         } catch (PDOException $e) {
             return null;
+        }
+    }
+
+    // Update the time elapsed on a task
+    public function updateTimeElapsed($task_id, $timeElapsed)
+    {
+        try {
+            $stmt = $this->connection->prepare("UPDATE Tasks SET time_elapsed = :time_elapsed WHERE task_id = :task_id");
+            $stmt->bindParam(':time_elapsed', $timeElapsed);
+            $stmt->bindParam(':task_id', $task_id);
+            $stmt->execute();
+
+            return $stmt->rowCount();
+        } catch (PDOException $e) {
         }
     }
 }

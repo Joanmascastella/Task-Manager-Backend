@@ -11,6 +11,7 @@ class Task {
     public $created_at;
     public $updated_at;
     public $list_id;
+    public $time_elapsed;
 }
 
 ?>

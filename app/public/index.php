@@ -30,6 +30,7 @@ $router->put('/tasks/(\d+)', 'TaskController@update');
 $router->delete('/tasks/(\d+)', 'TaskController@delete');
 $router->post('/tasks/(\d+)/complete', 'TaskController@complete');
 $router->get('/share/task/(\d+)', 'TaskController@shareSingle');
+$router->put('/tasks/(\d+)/time', 'TaskController@updateTimeElapsed');
 
 // List Management endpoints
 $router->post('/lists', 'ListController@create');

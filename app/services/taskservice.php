@@ -27,7 +27,7 @@ class TaskService
     }
 
     // Retrieve a single task by its ID
-    public function getOne($user_id,$task_id)
+    public function getOne($user_id, $task_id)
     {
         return $this->repository->getOne($user_id, $task_id);
     }
@@ -49,6 +49,12 @@ class TaskService
     {
         return $this->repository->complete($task_id);
     }
+
+    public function updateTimeElapsed($task_id, $timeElapsed)
+    {
+        return $this->repository->updateTimeElapsed($task_id, $timeElapsed);
+    }
+
 
 }
 ?>

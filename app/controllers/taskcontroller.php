@@ -22,10 +22,10 @@ class TaskController extends Controller
             $taskData = $this->createObjectFromPostedJson("Models\\Task");
             $decoded = $this->checkForJwt();
             if (!$decoded) {
-                return; 
+                return;
             }
 
-            $taskData->user_id = $decoded->data->id; 
+            $taskData->user_id = $decoded->data->id;
             $taskId = $this->service->create($taskData);
             $this->respond(['message' => 'Task created successfully', 'task_id' => $taskId]);
         } catch (Exception $e) {
@@ -38,7 +38,7 @@ class TaskController extends Controller
         try {
             $decoded = $this->checkForJwt();
             if (!$decoded) {
-                return; 
+                return;
             }
 
             $tasks = $this->service->getAll($decoded->data->id);
@@ -53,7 +53,7 @@ class TaskController extends Controller
         try {
             $decoded = $this->checkForJwt();
             if (!$decoded) {
-                return; 
+                return;
             }
             $task = $this->service->getOne($decoded->data->id, $id);
             if (!$task) {
@@ -111,11 +111,12 @@ class TaskController extends Controller
     }
 
 
-    function shareSingle($id){
+    function shareSingle($id)
+    {
         try {
             $decoded = $this->checkForJwt();
             if (!$decoded) {
-                return; 
+                return;
             }
             $sharedTask = $this->service->getOne($decoded->data->id, $id);
             if (!$sharedTask) {
@@ -127,5 +128,21 @@ class TaskController extends Controller
             $this->respondWithError(500, $e->getMessage());
         }
     }
-   
+
+    public function updateTimeElapsed($task_id)
+    {
+        try {
+            $taskData = $this->createObjectFromPostedJson("Models\\Task");
+            $updateCount = $this->service->updateTimeElapsed($task_id, $taskData->time_elapsed);
+            if ($updateCount > 0) {
+                $this->respond(['message' => 'Task time updated successfully']);
+            } else {
+                $this->respondWithError(404, 'Task not found or no changes made');
+            }
+        } catch (Exception $e) {
+            $this->respondWithError(500, $e->getMessage());
+        }
+    }
+
+
 }
