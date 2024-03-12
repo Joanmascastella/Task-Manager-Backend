@@ -18,6 +18,9 @@ $router->post('/register', 'UserController@register');
 $router->post('/login', 'UserController@login');
 $router->put('/user/update', 'UserController@update');
 $router->delete('/user/delete', 'UserController@delete');
+$router->get('/user', 'UserController@getAll');
+$router->get('/user/(\d+)', 'UserController@getOne');
+
 
 // Task Management endpoints
 $router->post('/tasks', 'TaskController@create');
@@ -30,6 +33,8 @@ $router->get('/share/task/(\d+)', 'TaskController@shareSingle');
 
 // List Management endpoints
 $router->post('/lists', 'ListController@create');
+$router->get('/lists', 'ListController@getAll');
+$router->get('/lists/(\d+)', 'ListController@getOne');
 $router->put('/lists/(\d+)', 'ListController@update');
 $router->delete('/lists/(\d+)', 'ListController@delete');
 $router->post('/lists/(\d+)/tasks', 'ListController@addTask');

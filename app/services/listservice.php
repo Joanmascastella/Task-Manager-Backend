@@ -39,6 +39,15 @@ class ListService {
         return $this->repository->share($list_id);
     }
 
+    public function getOne($user_id, $list_id) {
+        return $this->repository->getOne($user_id, $list_id);
+    }
+    
+    public function getAll($user_id) {
+        return $this->repository->getAll($user_id);
+    }
+    
+
 }
 
 ?>

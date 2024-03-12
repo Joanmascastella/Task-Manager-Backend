@@ -6,14 +6,15 @@ use Exception;
 use Models\User;
 use Services\UserService;
 use \Firebase\JWT\JWT;
+use \Firebase\JWT\Key;
 
 class UserController extends Controller
 {
     private $service;
-    private $jwtSecret;
 
     function __construct()
     {
+        parent::__construct();
         $this->service = new UserService();
     }
 
@@ -34,12 +35,12 @@ class UserController extends Controller
     public function login()
     {
 
-        $user = $this->createObjectFromPostedJson("Models\\User");
-        $user = $this->service->checkUsernamePassword($user->email, $user->password_hash);
+        $postedUser = $this->createObjectFromPostedJson("Models\\User");
+        $user = $this->service->checkUsernamePassword($postedUser->email, $postedUser->password_hash);
 
-        if(!$user){
+        if (!$user) {
             $this->respondWithError(401, "Invalid Login");
-            return;            
+            return;
         }
 
         $tokenResponse = $this->generateJWT($user);
@@ -73,27 +74,85 @@ class UserController extends Controller
         $this->respond(['success' => true]);
     }
 
-    function generateJWT($user){
-        $payload = array (
+
+
+
+    public function getOne($user_id)
+    {
+        try {
+            $decoded = $this->checkForJwt();
+            if (!$decoded) {
+                return;
+            }
+
+            if ($decoded->data->role !== 'admin') {
+                $this->respondWithError(403, "Unauthorized access. Admin role required.");
+                return;
+            }
+            
+            $user = $this->service->getOne($user_id);
+            if ($user) {
+                $this->respond($user);
+            } else {
+                $this->respondWithError(404, "User not found");
+            }
+        } catch (Exception $e) {
+            $this->respondWithError(500, $e->getMessage());
+        }
+    }
+
+
+    public function getAll()
+    {
+        try {
+            $decoded = $this->checkForJwt();
+            if (!$decoded) {
+                return;
+            }
+
+            if ($decoded->data->role !== 'admin') {
+                $this->respondWithError(403, "Unauthorized access. Admin role required.");
+                return;
+            }
+
+            $users = $this->service->getAll();
+            $this->respond($users);
+        } catch (Exception $e) {
+            $this->respondWithError(500, $e->getMessage());
+        }
+    }
+
+
+
+    function generateJWT($user)
+    {
+        $issuedAt = time();
+        $notbefore = $issuedAt;
+        $expire = $issuedAt + 600;
+        $issuer = 'localhost.com';
+        $audience = 'localhost.com';
+
+        $payload = array(
             "iss" => $issuer,
-            "aud" => $audience, 
+            "aud" => $audience,
             "iat" => $issuedAt,
             "nbf" => $notbefore,
             "exp" => $expire,
-            "data" => array (
+            "data" => array(
                 "id" => $user->id,
                 "username" => $user->username,
-                "email" => $user->email
-            ));
+                "email" => $user->email,
+                "role" => $user->role
+            )
+        );
 
-        )
-        $jwt = JWT::encode ($payload, $secret_key, 'HS256');
+        $jwt = JWT::encode($payload, $this->jwtSecret, 'HS256');
 
         return array(
-            "message" => "succesful login",
+            "message" => "Successful login.",
             "jwt" => $jwt,
             "username" => $user->username,
-            "expiredAt" => $expire
-        )
+            "expireAt" => $expire
+        );
     }
 }

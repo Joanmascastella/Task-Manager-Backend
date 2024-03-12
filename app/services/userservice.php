@@ -4,7 +4,8 @@ namespace Services;
 use Models\User;
 use Repositories\UserRepository;
 
-class UserService {
+class UserService
+{
 
     private $repository;
 
@@ -14,28 +15,46 @@ class UserService {
     }
 
     // Verify username and password
-    public function checkUsernamePassword($username, $password) {
+    public function checkUsernamePassword($username, $password)
+    {
         return $this->repository->checkUsernamePassword($username, $password);
     }
 
     // Register a new user
-    public function register(User $user) {
+    public function register(User $user)
+    {
         return $this->repository->register($user);
     }
 
     // Update existing user details
-    public function update(User $user) {
+    public function update(User $user)
+    {
         return $this->repository->update($user);
     }
 
     // Delete a user
-    public function delete($user_id) {
+    public function delete($user_id)
+    {
         return $this->repository->delete($user_id);
     }
 
-    public function hashPassword($password){
+    public function hashPassword($password)
+    {
         return $this->repository->hashPassword($password);
     }
-   
+
+
+
+    public function getOne($user_id)
+    {
+        return $this->repository->getOne($user_id);
+    }
+
+    public function getAll()
+    {
+        return $this->repository->getAll();
+    }
+
+
 }
 ?>

@@ -19,7 +19,7 @@ class ListRepository extends Repository
 
             return $this->connection->lastInsertId();
         } catch (PDOException $e) {
-          
+
         }
     }
 
@@ -34,7 +34,7 @@ class ListRepository extends Repository
 
             return $stmt->rowCount();
         } catch (PDOException $e) {
-          
+
         }
     }
 
@@ -48,7 +48,7 @@ class ListRepository extends Repository
 
             return $stmt->rowCount();
         } catch (PDOException $e) {
-         
+
         }
     }
 
@@ -63,7 +63,7 @@ class ListRepository extends Repository
 
             return $stmt->rowCount();
         } catch (PDOException $e) {
-          
+
         }
     }
 
@@ -86,5 +86,76 @@ class ListRepository extends Repository
 
         }
     }
+
+    // Retrieve a single list by its ID with all its tasks
+    public function getOne($user_id, $list_id)
+    {
+        try {
+            $stmt = $this->connection->prepare("
+            SELECT l.*, t.task_id, t.title, t.description, t.deadline, t.status
+            FROM Lists l
+            LEFT JOIN Tasks t ON l.list_id = t.list_id
+            WHERE l.list_id = :list_id AND l.user_id = :user_id
+        ");
+            $stmt->bindParam(':list_id', $list_id);
+            $stmt->bindParam(':user_id', $user_id);
+            $stmt->execute();
+
+            $listData = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($listData) {
+                $listData['tasks'] = [];
+                while ($task = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $listData['tasks'][] = $task;
+                }
+            }
+            return $listData;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return null;
+        }
+    }
+
+    // Retrieve all lists for the given user_id with their tasks
+    public function getAll($user_id)
+    {
+        try {
+            $stmt = $this->connection->prepare("
+            SELECT l.list_id, l.listname, t.task_id, t.title, t.description, t.deadline, t.status
+            FROM Lists l
+            LEFT JOIN Tasks t ON l.list_id = t.list_id
+            WHERE l.user_id = :user_id
+            ORDER BY l.list_id, t.task_id
+        ");
+            $stmt->bindParam(':user_id', $user_id);
+            $stmt->execute();
+
+            $lists = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $listId = $row['list_id'];
+                if (!isset($lists[$listId])) {
+                    $lists[$listId] = [
+                        'list_id' => $row['list_id'],
+                        'listname' => $row['listname'],
+                        'tasks' => []
+                    ];
+                }
+                if ($row['task_id']) {
+                    $lists[$listId]['tasks'][] = [
+                        'task_id' => $row['task_id'],
+                        'title' => $row['title'],
+                        'description' => $row['description'],
+                        'deadline' => $row['deadline'],
+                        'status' => $row['status']
+                    ];
+                }
+            }
+
+            return array_values($lists);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return [];
+        }
+    }
+
 }
 ?>

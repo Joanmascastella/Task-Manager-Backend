@@ -88,11 +88,12 @@ class TaskRepository extends Repository
     }
 
     // Retrieve a single task by its ID
-    function getOne($task_id)
+    function getOne($user_id, $task_id)
     {
         try {
-            $stmt = $this->connection->prepare("SELECT * FROM Tasks WHERE task_id = :task_id LIMIT 1");
+            $stmt = $this->connection->prepare("SELECT * FROM Tasks WHERE list_id = :list_id AND user_id = :user_id LIMIT 1");
             $stmt->bindParam(':task_id', $task_id);
+            $stmt->bindParam(':user_id', $user_id);
             $stmt->execute();
 
             $stmt->setFetchMode(PDO::FETCH_CLASS, 'Models\Task');

@@ -35,7 +35,7 @@ class UserRepository extends Repository
         }
     }
 
-    
+
     function register(User $user)
     {
         try {
@@ -43,32 +43,32 @@ class UserRepository extends Repository
             $stmt->bindParam(':email', $user->email);
             $stmt->bindParam(':name', $user->name);
             $stmt->bindParam(':password_hash', $this->hashPassword($user->password_hash));
-            $stmt->bindParam(':role', $user->role); 
+            $stmt->bindParam(':role', $user->role);
             $stmt->execute();
 
             return $this->connection->lastInsertId();
         } catch (PDOException $e) {
-        
+
         }
     }
 
     function update(User $user)
     {
         try {
-            
+
             $stmt = $this->connection->prepare("UPDATE Users SET email = :email, name = :name, role = :role WHERE user_id = :user_id");
             $stmt->bindParam(':email', $user->email);
             $stmt->bindParam(':name', $user->name);
             $stmt->bindParam(':role', $user->role);
             $stmt->bindParam(':user_id', $user->user_id);
             $stmt->execute();
-    
+
             return $stmt->rowCount();
         } catch (PDOException $e) {
             // Handle exception
         }
     }
-    
+
 
     // Delete a user
     function delete($user_id)
@@ -95,6 +95,29 @@ class UserRepository extends Repository
     {
         return password_verify($input, $hash);
     }
+    public function getOne($user_id)
+    {
+        try {
+            $stmt = $this->connection->prepare("SELECT user_id, email, name, role FROM Users WHERE user_id = :user_id");
+            $stmt->bindParam(':user_id', $user_id);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return null;
+        }
+    }
 
+    public function getAll()
+    {
+        try {
+            $stmt = $this->connection->prepare("SELECT user_id, email, name, role FROM Users");
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return [];
+        }
+    }
 
 }

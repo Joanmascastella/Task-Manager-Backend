@@ -27,10 +27,9 @@ class TaskService
     }
 
     // Retrieve a single task by its ID
-    public function getOne($task_id)
+    public function getOne($user_id,$task_id)
     {
-
-        return $this->repository->getOne($task_id);
+        return $this->repository->getOne($user_id, $task_id);
     }
 
     // Update a task
