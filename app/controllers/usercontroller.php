@@ -15,4 +15,21 @@ class UserController extends Controller
     {
         $this->service = new UserService();
     }
+
+    function register(){
+
+    }
+
+    function login(){
+
+    }
+
+    function update(){
+
+    }
+
+    function delete(){
+
+    }
+
 }

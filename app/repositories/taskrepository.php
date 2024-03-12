@@ -12,17 +12,18 @@ class TaskRepository extends Repository
     function create(Task $task)
     {
         try {
-            $stmt = $this->connection->prepare("INSERT INTO Tasks (user_id, title, description, deadline, status) VALUES (:user_id, :title, :description, :deadline, :status)");
+            $stmt = $this->connection->prepare("INSERT INTO Tasks (user_id, title, description, deadline, status, list_id) VALUES (:user_id, :title, :description, :deadline, :status, :list_id)");
             $stmt->bindParam(':user_id', $task->user_id);
             $stmt->bindParam(':title', $task->title);
             $stmt->bindParam(':description', $task->description);
             $stmt->bindParam(':deadline', $task->deadline);
             $stmt->bindParam(':status', $task->status);
+            $stmt->bindParam(':list_id', $task->list_id); 
             $stmt->execute();
 
             return $this->connection->lastInsertId();
         } catch (PDOException $e) {
-
+            
         }
     }
 
@@ -30,13 +31,13 @@ class TaskRepository extends Repository
     function getAll($user_id)
     {
         try {
-            $stmt = $this->connection->prepare("SELECT * FROM Tasks WHERE user_id = :user_id");
+            $stmt = $this->connection->prepare("SELECT * FROM Tasks WHERE user_id = :user_id ORDER BY list_id");
             $stmt->bindParam(':user_id', $user_id);
             $stmt->execute();
 
             return $stmt->fetchAll(PDO::FETCH_CLASS, 'Models\Task');
         } catch (PDOException $e) {
-
+        
         }
     }
 
@@ -44,17 +45,17 @@ class TaskRepository extends Repository
     function update(Task $task)
     {
         try {
-            $stmt = $this->connection->prepare("UPDATE Tasks SET title = :title, description = :description, deadline = :deadline, status = :status WHERE task_id = :task_id");
+            $stmt = $this->connection->prepare("UPDATE Tasks SET title = :title, description = :description, deadline = :deadline, status = :status, list_id = :list_id WHERE task_id = :task_id");
             $stmt->bindParam(':title', $task->title);
             $stmt->bindParam(':description', $task->description);
             $stmt->bindParam(':deadline', $task->deadline);
             $stmt->bindParam(':status', $task->status);
+            $stmt->bindParam(':list_id', $task->list_id); 
             $stmt->bindParam(':task_id', $task->task_id);
             $stmt->execute();
 
             return $stmt->rowCount();
         } catch (PDOException $e) {
-
         }
     }
 

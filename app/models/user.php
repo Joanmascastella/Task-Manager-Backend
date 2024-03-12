@@ -6,7 +6,8 @@ class User {
     public $email;
     public $name;
     public $password_hash;
-    public $daily_time_goal;
+    public $role;
+
 }
 
 ?>

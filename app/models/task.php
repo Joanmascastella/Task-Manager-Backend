@@ -10,6 +10,7 @@ class Task {
     public $status;
     public $created_at;
     public $updated_at;
+    public $list_id;
 }
 
 ?>

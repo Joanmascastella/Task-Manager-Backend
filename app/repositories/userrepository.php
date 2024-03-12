@@ -9,62 +9,66 @@ use Models\User;
 
 class UserRepository extends Repository
 {
-    function checkUsernamePassword($username, $password)
+    function checkUsernamePassword($email, $password)
     {
         try {
-            // retrieve the user with the given username
-            $stmt = $this->connection->prepare("SELECT id, username, password, email FROM user WHERE username = :username");
-            $stmt->bindParam(':username', $username);
+            // retrieve the user with the given email
+            $stmt = $this->connection->prepare("SELECT user_id, email, password_hash, name, role FROM Users WHERE email = :email");
+            $stmt->bindParam(':email', $email);
             $stmt->execute();
 
             $stmt->setFetchMode(PDO::FETCH_CLASS, 'Models\User');
             $user = $stmt->fetch();
 
             // verify if the password matches the hash in the database
-            $result = $this->verifyPassword($password, $user->password);
+            $result = $this->verifyPassword($password, $user->password_hash);
 
             if (!$result)
                 return false;
 
             // do not pass the password hash to the caller
-            $user->password = "";
+            $user->password_hash = "";
 
             return $user;
         } catch (PDOException $e) {
-            echo $e;
+            // Handle exception
         }
     }
+
     
     function register(User $user)
     {
         try {
-            $stmt = $this->connection->prepare("INSERT INTO Users (email, name, password_hash, daily_time_goal) VALUES (:email, :name, :password_hash, :daily_time_goal)");
+            $stmt = $this->connection->prepare("INSERT INTO Users (email, name, password_hash, role) VALUES (:email, :name, :password_hash, :role)");
             $stmt->bindParam(':email', $user->email);
             $stmt->bindParam(':name', $user->name);
             $stmt->bindParam(':password_hash', $this->hashPassword($user->password_hash));
-            $stmt->bindParam(':daily_time_goal', $user->daily_time_goal);
+            $stmt->bindParam(':role', $user->role); 
             $stmt->execute();
 
             return $this->connection->lastInsertId();
         } catch (PDOException $e) {
-
+        
         }
     }
+
     function update(User $user)
     {
         try {
-            $stmt = $this->connection->prepare("UPDATE Users SET email = :email, name = :name, daily_time_goal = :daily_time_goal WHERE user_id = :user_id");
+            
+            $stmt = $this->connection->prepare("UPDATE Users SET email = :email, name = :name, role = :role WHERE user_id = :user_id");
             $stmt->bindParam(':email', $user->email);
             $stmt->bindParam(':name', $user->name);
-            $stmt->bindParam(':daily_time_goal', $user->daily_time_goal);
+            $stmt->bindParam(':role', $user->role);
             $stmt->bindParam(':user_id', $user->user_id);
             $stmt->execute();
-
+    
             return $stmt->rowCount();
         } catch (PDOException $e) {
-
+            // Handle exception
         }
     }
+    
 
     // Delete a user
     function delete($user_id)

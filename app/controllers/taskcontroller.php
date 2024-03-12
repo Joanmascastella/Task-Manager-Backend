@@ -15,5 +15,32 @@ class Taskcontroller extends Controller
         $this->service = new Taskservice();
     }
 
+    function create(){
+
+    }
+
+    function getAll(){
+
+    }
+    
+    function getOne(){
+
+    }
+    
+    function update(){
+
+    }
+    
+    function delete(){
+
+    }
+
+    function complete(){
+
+    }
+
+    function shareSingle(){
+
+    }
    
 }

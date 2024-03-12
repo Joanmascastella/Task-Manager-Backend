@@ -26,12 +26,15 @@ $router->get('/tasks/(\d+)', 'TaskController@getOne');
 $router->put('/tasks/(\d+)', 'TaskController@update');
 $router->delete('/tasks/(\d+)', 'TaskController@delete');
 $router->post('/tasks/(\d+)/complete', 'TaskController@complete');
+$router->get('/share/task/(\d+)', 'TaskController@shareSingle');
 
-// Activity and Goals endpoints
-$router->get('/user/daily-goal', 'ActivityController@getDailyGoal');
-$router->put('/user/daily-goal', 'ActivityController@updateDailyGoal');
-$router->get('/user/streak', 'ActivityController@getStreak');
-$router->get('/user/activity-log', 'ActivityController@getActivityLog');
+// List Management endpoints
+$router->post('/lists', 'ListController@create');
+$router->put('/lists/(\d+)', 'ListController@update');
+$router->delete('/lists/(\d+)', 'ListController@delete');
+$router->post('/lists/(\d+)/tasks', 'ListController@addTask');
+$router->get('/share/list/(\d+)', 'ListController@share');
+
 
 // Run it!
 $router->run();
