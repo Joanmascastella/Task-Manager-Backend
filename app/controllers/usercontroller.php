@@ -1,6 +1,7 @@
 <?php
 
 namespace Controllers;
+
 require __DIR__ . '/../vendor/autoload.php';
 use Exception;
 use Models\User;
@@ -35,17 +36,17 @@ class UserController extends Controller
     public function login()
     {
         $postedUser = $this->createObjectFromPostedJson("Models\\User");
-        $user = $this->service->checkUsernamePassword($postedUser->email, $postedUser->password);
-    
+        $user = $this->service->checkUsernamePassword($postedUser->email, $postedUser->password_hash);
+
         if (!$user) {
             $this->respondWithError(401, "Invalid Login");
             return;
         }
-    
+
         $tokenResponse = $this->generateJWT($user);
         $this->respond($tokenResponse);
     }
-    
+
 
     public function update($id)
     {
@@ -88,7 +89,7 @@ class UserController extends Controller
                 $this->respondWithError(403, "Unauthorized access. Admin role required.");
                 return;
             }
-            
+
             $user = $this->service->getOne($user_id);
             if ($user) {
                 $this->respond($user);
@@ -123,7 +124,7 @@ class UserController extends Controller
 
 
 
-    function generateJWT($user)
+    public function generateJWT($user)
     {
         $issuedAt = time();
         $notbefore = $issuedAt;
@@ -138,8 +139,8 @@ class UserController extends Controller
             "nbf" => $notbefore,
             "exp" => $expire,
             "data" => array(
-                "id" => $user->id,
-                "username" => $user->username,
+                "id" => $user->user_id,
+                "username" => $user->email,
                 "email" => $user->email,
                 "role" => $user->role
             )
@@ -150,8 +151,9 @@ class UserController extends Controller
         return array(
             "message" => "Successful login.",
             "jwt" => $jwt,
-            "username" => $user->username,
+            "username" => $user->email,
             "expireAt" => $expire
         );
     }
+
 }
