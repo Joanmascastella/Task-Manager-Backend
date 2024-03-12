@@ -34,19 +34,18 @@ class UserController extends Controller
 
     public function login()
     {
-
         $postedUser = $this->createObjectFromPostedJson("Models\\User");
-        $user = $this->service->checkUsernamePassword($postedUser->email, $postedUser->password_hash);
-
+        $user = $this->service->checkUsernamePassword($postedUser->email, $postedUser->password);
+    
         if (!$user) {
             $this->respondWithError(401, "Invalid Login");
             return;
         }
-
+    
         $tokenResponse = $this->generateJWT($user);
         $this->respond($tokenResponse);
-
     }
+    
 
     public function update($id)
     {

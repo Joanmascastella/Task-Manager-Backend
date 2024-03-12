@@ -30,6 +30,8 @@ class UserRepository extends Repository
             $user->password_hash = "";
 
             return $user;
+
+            
         } catch (PDOException $e) {
             // Handle exception
         }
@@ -42,7 +44,7 @@ class UserRepository extends Repository
             $stmt = $this->connection->prepare("INSERT INTO Users (email, name, password_hash, role) VALUES (:email, :name, :password_hash, :role)");
             $stmt->bindParam(':email', $user->email);
             $stmt->bindParam(':name', $user->name);
-            $stmt->bindParam(':password_hash', $this->hashPassword($user->password_hash));
+            $stmt->bindParam(':password_hash', $user->password_hash);
             $stmt->bindParam(':role', $user->role);
             $stmt->execute();
 
