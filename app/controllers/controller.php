@@ -2,6 +2,7 @@
 
 namespace Controllers;
 
+require __DIR__ . '/../vendor/autoload.php';
 use Exception;
 use \Firebase\JWT\JWT;
 use \Firebase\JWT\Key;

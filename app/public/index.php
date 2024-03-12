@@ -9,7 +9,7 @@ ini_set("display_errors", 1);
 require __DIR__ . '/../vendor/autoload.php';
 
 // Create Router instance
-$router = new \Bramus\Router\Router();
+$router = new \Bdoramus\Router\Router();
 
 $router->setNamespace('Controllers');
 

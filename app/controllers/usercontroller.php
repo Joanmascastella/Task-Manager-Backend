@@ -1,7 +1,7 @@
 <?php
 
 namespace Controllers;
-
+require __DIR__ . '/../vendor/autoload.php';
 use Exception;
 use Models\User;
 use Services\UserService;
