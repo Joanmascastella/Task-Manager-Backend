@@ -2,12 +2,11 @@
 namespace Models;
 
 class User {
-
-    public int $id;
-    public string $username;
-    public string $password;
-    public string $email;
-
+    public $user_id;
+    public $email;
+    public $name;
+    public $password_hash;
+    public $daily_time_goal;
 }
 
 ?>
