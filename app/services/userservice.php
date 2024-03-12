@@ -33,6 +33,9 @@ class UserService {
         return $this->repository->delete($user_id);
     }
 
+    public function hashPassword($password){
+        return $this->repository->hashPassword($password);
+    }
    
 }
 ?>
