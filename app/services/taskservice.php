@@ -1,17 +1,55 @@
 <?php
 namespace Services;
 
-use Repositories\Taskrepository;
+use Models\Task;
+use Repositories\TaskRepository;
 
-class Taskservice {
+class TaskService
+{
 
     private $repository;
 
     function __construct()
     {
-        $this->repository = new Taskrepository();
+        $this->repository = new TaskRepository();
+    }
+
+    // Create a new task
+    public function create(Task $task)
+    {
+        return $this->repository->create($task);
+    }
+
+    // Retrieve all tasks for a user
+    public function getAll($user_id)
+    {
+        return $this->repository->getAll($user_id);
+    }
+
+    // Retrieve a single task by its ID
+    public function getOne($task_id)
+    {
+
+        return $this->repository->getOne($task_id);
+    }
+
+    // Update a task
+    public function update(Task $task)
+    {
+        return $this->repository->update($task);
+    }
+
+    // Delete a task
+    public function delete($task_id)
+    {
+        return $this->repository->delete($task_id);
+    }
+
+    // Mark a task as complete
+    public function complete($task_id)
+    {
+        return $this->repository->complete($task_id);
     }
 
 }
-
 ?>
