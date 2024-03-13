@@ -27,7 +27,7 @@ class ListController extends Controller
             $listData = $this->createObjectFromPostedJson("Models\\ListModel");
             $listData->user_id = $decoded->data->id; 
             $listId = $this->service->create($listData);
-            $this->respond(['message' => 'List created successfully', 'list_id' => $listId]);
+            $this->respond($listId);
         } catch (Exception $e) {
             $this->respondWithError(500, $e->getMessage());
         }

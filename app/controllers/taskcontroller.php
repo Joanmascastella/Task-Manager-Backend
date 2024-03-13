@@ -27,7 +27,7 @@ class TaskController extends Controller
 
             $taskData->user_id = $decoded->data->id;
             $taskId = $this->service->create($taskData);
-            $this->respond(['message' => 'Task created successfully', 'task_id' => $taskId]);
+            $this->respond($taskId);
         } catch (Exception $e) {
             $this->respondWithError(500, $e->getMessage());
         }
