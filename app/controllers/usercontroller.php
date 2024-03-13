@@ -80,16 +80,6 @@ class UserController extends Controller
     public function getOne($user_id)
     {
         try {
-            $decoded = $this->checkForJwt();
-            if (!$decoded) {
-                return;
-            }
-
-            if ($decoded->data->role !== 'admin') {
-                $this->respondWithError(403, "Unauthorized access. Admin role required.");
-                return;
-            }
-
             $user = $this->service->getOne($user_id);
             if ($user) {
                 $this->respond($user);
@@ -151,6 +141,7 @@ class UserController extends Controller
         return array(
             "message" => "Successful login.",
             "jwt" => $jwt,
+            "id" => $user->user_id,
             "username" => $user->email,
             "role" =>$user->role,
             "expireAt" => $expire

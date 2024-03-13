@@ -9,6 +9,7 @@ use \Firebase\JWT\Key;
 
 class Controller
 {
+
     protected $jwtSecret;
 
     function __construct()
@@ -16,19 +17,23 @@ class Controller
         $this->jwtSecret = 'f9b6d9af573c257bea415f6027e957762cbacc14f2f1c9f6b58a8e6eafaa17bf';
     }
     function checkForJwt() {
+         // Check for token header
          if(!isset($_SERVER['HTTP_AUTHORIZATION'])) {
             $this->respondWithError(401, "No token provided");
             return;
         }
 
+        // Read JWT from header
         $authHeader = $_SERVER['HTTP_AUTHORIZATION'];
+        // Strip the part "Bearer " from the header
         $arr = explode(" ", $authHeader);
         $jwt = $arr[1];
-       
+
         if ($jwt) {
             try {
                 $decoded = JWT::decode($jwt, new Key($this->jwtSecret, 'HS256'));
-                echo $decoded->data->username;
+    
+                 $decoded->data->username;
                 return $decoded;
             } catch (Exception $e) {
                 $this->respondWithError(401, $e->getMessage());
