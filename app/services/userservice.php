@@ -3,15 +3,18 @@ namespace Services;
 
 use Models\User;
 use Repositories\UserRepository;
-
+use Repositories\AnalyticsRepository;
 class UserService
 {
 
     private $repository;
+    private $repository2;
 
     function __construct()
     {
         $this->repository = new UserRepository();
+        $this->repository2 = new AnalyticsRepository();
+
     }
 
     // Verify username and password
@@ -59,6 +62,23 @@ class UserService
         return $this->repository->getUserById($userId);
     }
 
+    public function getTotalActiveUsers() {
+        return $this->repository2->getCountOfActiveUsers();
+    }
+
+    public function getTotalTasks() {
+        return $this->repository2->getCountOfTotalTasks();
+    }
+
+    public function getTotalCompletedTasks() {
+        $totalTasks = $this->repository2->getCountOfTotalTasks();
+        $completedTasks = $this->repository2->getCountOfCompletedTasks();
+        return [
+            'completed' => $completedTasks,
+            'total' => $totalTasks,
+            'percentage' => ($totalTasks > 0) ? ($completedTasks / $totalTasks) * 100 : 0
+        ];
+    }
 
 }
 ?>

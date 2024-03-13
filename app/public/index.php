@@ -43,6 +43,12 @@ $router->post('/lists/(\d+)/tasks', 'ListController@addTask');
 $router->get('/share/list/(\d+)', 'ListController@share');
 
 
+// Analytics endpoints
+$router->get('/analytics/users', 'UserController@getTotalActiveUsers');
+$router->get('/analytics/tasks', 'UserController@getTotalTasks');
+$router->get('/analytics/tasks/completed', 'UserController@getTotalCompletedTasks');
+
+
 // Run it!
 $router->run();
 ?>

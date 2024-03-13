@@ -154,7 +154,36 @@ class UserController extends Controller
             $this->respondWithError(401, "Invalid token");
         }
     }
+    function getTotalActiveUsers(){
+        $decoded = $this->checkForJwt();
+        if (!($decoded->data->role == "admin")) {
+            $this->respondWithError(403, "Forbidden - You can only access analytics if admin.");
+            return;
+        }
 
+        $activeusers = $this->service->getTotalActiveUsers();
+        $this->respond($activeusers);
+    }
+
+    function getTotalTasks(){
+        $decoded = $this->checkForJwt();
+        if (!($decoded->data->role == "admin")) {
+            $this->respondWithError(403, "Forbidden - You can only access analytics if admin.");
+            return;
+        }
+        $totaltasks = $this->service->getTotalTasks();
+        $this->respond($totaltasks);
+    }
+
+    function getTotalCompletedTasks(){
+        $decoded = $this->checkForJwt();
+        if (!($decoded->data->role == "admin")) {
+            $this->respondWithError(403, "Forbidden - You can only access analytics if admin.");
+            return;
+        }
+        $totalcompleted = $this->service->getTotalCompletedTasks();
+        $this->respond($totalcompleted);
+    }
     public function generateJWT($user)
 {
     $issuedAt = time();
