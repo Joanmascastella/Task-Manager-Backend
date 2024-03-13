@@ -51,13 +51,11 @@ class UserController extends Controller
     public function update($user_id)
     {
         $decoded = $this->checkForJwt();
-
-
-        if ($decoded->data->id != $user_id) {
-            $this->respondWithError(403, "Forbidden - You can only update your own account.");
+        if (!($decoded->data->role == "admin" || $decoded->data->id == $user_id)) {
+            $this->respondWithError(403, "Forbidden - You can only update your own account unless you're an admin.");
             return;
         }
-
+    
         try {
             $userData = $this->createObjectFromPostedJson("Models\\User");
             $userData->user_id = $user_id;
@@ -68,12 +66,13 @@ class UserController extends Controller
             return;
         }
     }
+    
 
     public function delete($user_id)
     {
         $decoded = $this->checkForJwt();
 
-        if ($decoded->data->id != $user_id) {
+        if (!($decoded->data->role == "admin" || $decoded->data->id == $user_id)) {
             $this->respondWithError(403, "Forbidden - You can only delete your own account.");
             return;
         }
@@ -93,6 +92,13 @@ class UserController extends Controller
 
     public function getOne($user_id)
     {
+        $decoded = $this->checkForJwt();
+
+        if ($decoded->data->id != $user_id) {
+            $this->respondWithError(403, "Forbidden - You can only access your own account.");
+            return;
+        }
+
         try {
             $user = $this->service->getOne($user_id);
             if ($user) {
