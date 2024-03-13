@@ -48,24 +48,38 @@ class UserController extends Controller
     }
 
 
-    public function update($id)
+    public function update($user_id)
     {
+        $decoded = $this->checkForJwt();
+
+
+        if ($decoded->data->id != $user_id) {
+            $this->respondWithError(403, "Forbidden - You can only update your own account.");
+            return;
+        }
+
         try {
-            $user = $this->createObjectFromPostedJson("Models\\User");
-            $user->user_id = $id;
-            $user = $this->service->update($user);
+            $userData = $this->createObjectFromPostedJson("Models\\User");
+            $userData->user_id = $user_id;
+            $user = $this->service->update($userData);
+            $this->respond($user);
         } catch (Exception $e) {
             $this->respondWithError(500, $e->getMessage());
             return;
         }
-
-        $this->respond($user);
     }
 
-    public function delete($id)
+    public function delete($user_id)
     {
+        $decoded = $this->checkForJwt();
+
+        if ($decoded->data->id != $user_id) {
+            $this->respondWithError(403, "Forbidden - You can only delete your own account.");
+            return;
+        }
+
         try {
-            $this->service->delete($id);
+            $this->service->delete($user_id);
         } catch (Exception $e) {
             $this->respondWithError(500, $e->getMessage());
             return;
@@ -112,40 +126,65 @@ class UserController extends Controller
         }
     }
 
-
+    public function refreshToken()
+    {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $refreshToken = $data['refreshToken'];
+    
+        try {
+            $decoded = JWT::decode($refreshToken, new Key($this->jwtSecret, 'HS256'));
+            $userId = $decoded->data->id;
+            $user = $this->service->getUserById($userId);
+    
+            if (!$user) {
+                $this->respondWithError(401, "Invalid user");
+                return;
+            }
+    
+            $tokenResponse = $this->generateJWT($user);
+            $this->respond($tokenResponse);
+    
+        } catch (Exception $e) {
+            $this->respondWithError(401, "Invalid token");
+        }
+    }
 
     public function generateJWT($user)
-    {
-        $issuedAt = time();
-        $notbefore = $issuedAt;
-        $expire = $issuedAt + 600;
-        $issuer = 'localhost.com';
-        $audience = 'localhost.com';
+{
+    $issuedAt = time();
+    $accessExpire = $issuedAt + 3600; // 1 hour for access token
+    $refreshExpire = $issuedAt + 1209600; // 2 weeks for refresh token
 
-        $payload = array(
-            "iss" => $issuer,
-            "aud" => $audience,
-            "iat" => $issuedAt,
-            "nbf" => $notbefore,
-            "exp" => $expire,
-            "data" => array(
-                "id" => $user->user_id,
-                "username" => $user->email,
-                "email" => $user->email,
-                "role" => $user->role
-            )
-        );
-
-        $jwt = JWT::encode($payload, $this->jwtSecret, 'HS256');
-
-        return array(
-            "message" => "Successful login.",
-            "jwt" => $jwt,
+    $accessToken = JWT::encode([
+        "iss" => 'localhost.com',
+        "aud" => 'localhost.com',
+        "iat" => $issuedAt,
+        "nbf" => $issuedAt,
+        "exp" => $accessExpire,
+        "data" => [
             "id" => $user->user_id,
             "username" => $user->email,
-            "role" =>$user->role,
-            "expireAt" => $expire
-        );
-    }
+            "email" => $user->email,
+            "role" => $user->role
+        ]
+    ], $this->jwtSecret, 'HS256');
+
+    $refreshToken = JWT::encode([
+        "iss" => 'localhost.com',
+        "aud" => 'localhost.com',
+        "iat" => $issuedAt,
+        "exp" => $refreshExpire,
+        "data" => [
+            "id" => $user->user_id
+        ]
+    ], $this->jwtSecret, 'HS256');
+
+    return [
+        "authToken" => $accessToken,
+        "refreshToken" => $refreshToken,
+        "expiresIn" => $accessExpire
+    ];
+}
+
 
 }

@@ -110,6 +110,22 @@ class UserRepository extends Repository
         }
     }
 
+    public function getUserById($userId){
+        try {
+           
+            $stmt = $this->connection->prepare("SELECT * FROM Users WHERE user_id = :user_id");
+            $stmt->bindParam(':user_id', $userId);
+            $stmt->execute();
+            $stmt->setFetchMode(PDO::FETCH_CLASS, 'Models\User');
+            $user = $stmt->fetch();
+
+            return $user;
+
+            
+        } catch (PDOException $e) {
+            // Handle exception
+        }
+    }
     public function getAll()
     {
         try {

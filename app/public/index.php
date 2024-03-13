@@ -16,10 +16,11 @@ $router->setNamespace('Controllers');
 // User Management endpoints
 $router->post('/register', 'UserController@register');
 $router->post('/login', 'UserController@login');
-$router->put('/user/update', 'UserController@update');
-$router->delete('/user/delete', 'UserController@delete');
+$router->put('/user/update/(\d+)', 'UserController@update');
+$router->delete('/user/delete/(\d+)', 'UserController@delete');
 $router->get('/user', 'UserController@getAll');
 $router->get('/user/(\d+)', 'UserController@getOne');
+$router->post('/refresh-token', 'UserController@refreshToken');
 
 
 // Task Management endpoints

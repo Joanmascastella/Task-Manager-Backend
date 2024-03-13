@@ -55,6 +55,10 @@ class UserService
         return $this->repository->getAll();
     }
 
+    public function getUserById($userId){
+        return $this->repository->getUserById($userId);
+    }
+
 
 }
 ?>
