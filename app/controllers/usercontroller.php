@@ -184,6 +184,52 @@ class UserController extends Controller
         $totalcompleted = $this->service->getTotalCompletedTasks();
         $this->respond($totalcompleted);
     }
+
+
+    function getTotalTasksForUser($id){
+        $decoded = $this->checkForJwt();
+
+        if ($decoded->data->id != $id) {
+            $this->respondWithError(403, "Forbidden - You can only access your own account.");
+            return;
+        }
+
+        try {
+            $user = $this->service->getTotalTasksForUser($id);
+            if ($user) {
+                $this->respond($user);
+            } else {
+                $this->respondWithError(404, "User not found");
+            }
+        } catch (Exception $e) {
+            $this->respondWithError(500, $e->getMessage());
+        }
+
+    }
+
+    function getTotalCompletedTasksForUser($id){
+        
+        $decoded = $this->checkForJwt();
+
+        if ($decoded->data->id != $id) {
+            $this->respondWithError(403, "Forbidden - You can only access your own account.");
+            return;
+        }
+
+        try {
+            $user = $this->service->getTotalCompletedTasksForUser($id);
+            if ($user) {
+                $this->respond($user);
+            } else {
+                $this->respondWithError(404, "User not found");
+            }
+        } catch (Exception $e) {
+            $this->respondWithError(500, $e->getMessage());
+        }
+        
+    }
+    
+
     public function generateJWT($user)
 {
     $issuedAt = time();
@@ -198,7 +244,7 @@ class UserController extends Controller
         "exp" => $accessExpire,
         "data" => [
             "id" => $user->user_id,
-            "username" => $user->email,
+            "username" => $user->name,
             "email" => $user->email,
             "role" => $user->role
         ]

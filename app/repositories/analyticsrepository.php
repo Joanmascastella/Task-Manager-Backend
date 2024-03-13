@@ -1,5 +1,4 @@
 <?php
-
 namespace Repositories;
 
 use PDO;
@@ -25,5 +24,18 @@ class AnalyticsRepository extends Repository {
         return $stmt->fetchColumn();
     }
 
-}
 
+    public function getCountOfTotalTasksUser($id) {
+        $stmt = $this->connection->prepare("SELECT COUNT(*) FROM Tasks WHERE user_id = :user_id");
+        $stmt->bindParam(':user_id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
+    public function getCountOfCompletedTasksUser($id) {
+        $stmt = $this->connection->prepare("SELECT COUNT(*) FROM Tasks WHERE user_id = :user_id AND status = 'completed'");
+        $stmt->bindParam(':user_id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+}

@@ -4,6 +4,7 @@ namespace Services;
 use Models\User;
 use Repositories\UserRepository;
 use Repositories\AnalyticsRepository;
+
 class UserService
 {
 
@@ -58,19 +59,38 @@ class UserService
         return $this->repository->getAll();
     }
 
-    public function getUserById($userId){
+    public function getUserById($userId)
+    {
         return $this->repository->getUserById($userId);
     }
 
-    public function getTotalActiveUsers() {
+    public function getTotalActiveUsers()
+    {
         return $this->repository2->getCountOfActiveUsers();
     }
 
-    public function getTotalTasks() {
+    public function getTotalTasks()
+    {
         return $this->repository2->getCountOfTotalTasks();
     }
 
-    public function getTotalCompletedTasks() {
+    public function getTotalTasksForUser($id)
+    {
+       return $this->repository2->getCountOfTotalTasksUser($id);   }
+
+    public function getTotalCompletedTasksForUser($id)
+    {
+        $totalTasks = $this->repository2->getCountOfTotalTasksUser($id);
+        $completedTasks = $this->repository2->getCountOfCompletedTasksUser($id);
+        return [
+            'completed' => $completedTasks,
+            'total' => $totalTasks,
+            'percentage' => ($totalTasks > 0) ? ($completedTasks / $totalTasks) * 100 : 0
+        ];
+    }
+
+    public function getTotalCompletedTasks()
+    {
         $totalTasks = $this->repository2->getCountOfTotalTasks();
         $completedTasks = $this->repository2->getCountOfCompletedTasks();
         return [
