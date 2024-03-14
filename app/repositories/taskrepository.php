@@ -74,10 +74,11 @@ class TaskRepository extends Repository
     }
 
     // Mark a task as complete
-    function complete($task_id)
+    function complete($task_id, $status)
     {
         try {
-            $stmt = $this->connection->prepare("UPDATE Tasks SET status = 'completed' WHERE task_id = :task_id");
+            $stmt = $this->connection->prepare("UPDATE Tasks SET status = :status WHERE task_id = :task_id");
+            $stmt->bindParam(':status', $status);
             $stmt->bindParam(':task_id', $task_id);
             $stmt->execute();
 

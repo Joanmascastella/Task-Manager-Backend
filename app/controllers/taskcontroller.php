@@ -69,6 +69,11 @@ class TaskController extends Controller
     function update($id)
     {
         try {
+            $decoded = $this->checkForJwt();
+            if (!$decoded) {
+                return;
+            }
+
             $taskData = $this->createObjectFromPostedJson("Models\\Task");
             $taskData->task_id = $id;
             $updateCount = $this->service->update($taskData);
@@ -85,6 +90,11 @@ class TaskController extends Controller
     function delete($id)
     {
         try {
+            $decoded = $this->checkForJwt();
+            if (!$decoded) {
+                return;
+            }
+
             $deleteCount = $this->service->delete($id);
             if ($deleteCount > 0) {
                 $this->respond(['message' => 'Task deleted successfully']);
@@ -96,10 +106,15 @@ class TaskController extends Controller
         }
     }
 
-    function complete($id)
+    function complete($id, $status)
     {
         try {
-            $completeCount = $this->service->complete($id);
+            $decoded = $this->checkForJwt();
+            if (!$decoded) {
+                return;
+            }
+
+            $completeCount = $this->service->complete($id, $status);
             if ($completeCount > 0) {
                 $this->respond(['message' => 'Task marked as complete']);
             } else {
@@ -109,6 +124,7 @@ class TaskController extends Controller
             $this->respondWithError(500, $e->getMessage());
         }
     }
+    
 
 
     function shareSingle($id)
@@ -132,6 +148,11 @@ class TaskController extends Controller
     public function updateTimeElapsed($task_id)
     {
         try {
+            $decoded = $this->checkForJwt();
+            if (!$decoded) {
+                return;
+            }
+            
             $taskData = $this->createObjectFromPostedJson("Models\\Task");
             $updateCount = $this->service->updateTimeElapsed($task_id, $taskData->time_elapsed);
             if ($updateCount > 0) {

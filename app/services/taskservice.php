@@ -45,9 +45,9 @@ class TaskService
     }
 
     // Mark a task as complete
-    public function complete($task_id)
+    public function complete($task_id, $status)
     {
-        return $this->repository->complete($task_id);
+        return $this->repository->complete($task_id, $status);
     }
 
     public function updateTimeElapsed($task_id, $timeElapsed)

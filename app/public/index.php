@@ -29,7 +29,7 @@ $router->get('/tasks', 'TaskController@getAll');
 $router->get('/tasks/(\d+)', 'TaskController@getOne');
 $router->put('/tasks/(\d+)', 'TaskController@update');
 $router->delete('/tasks/(\d+)', 'TaskController@delete');
-$router->post('/tasks/(\d+)/complete', 'TaskController@complete');
+$router->put('/tasks/(\d+)/(\w+)', 'TaskController@complete');
 $router->get('/share/task/(\d+)', 'TaskController@shareSingle');
 $router->put('/tasks/(\d+)/time', 'TaskController@updateTimeElapsed');
 
