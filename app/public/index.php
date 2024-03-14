@@ -14,22 +14,22 @@ $router = new \Bramus\Router\Router();
 $router->setNamespace('Controllers');
 
 // User Management endpoints
-$router->post('/register', 'UserController@register');
-$router->post('/login', 'UserController@login');
-$router->put('/user/update/(\d+)', 'UserController@update');
-$router->delete('/user/delete/(\d+)', 'UserController@delete');
-$router->get('/user', 'UserController@getAll');
-$router->get('/user/(\d+)', 'UserController@getOne');
-$router->post('/refresh-token', 'UserController@refreshToken');
+$router->post('/register', 'UserController@register'); //done
+$router->post('/login', 'UserController@login'); //done
+$router->put('/user/update/(\d+)', 'UserController@update'); //done
+$router->delete('/user/delete/(\d+)', 'UserController@delete'); //done
+$router->get('/user', 'UserController@getAll'); //done
+$router->get('/user/(\d+)', 'UserController@getOne'); //done 
+$router->post('/refresh-token', 'UserController@refreshToken'); //done
 
 
 // Task Management endpoints
-$router->post('/tasks', 'TaskController@create');
-$router->get('/tasks', 'TaskController@getAll');
+$router->post('/tasks', 'TaskController@create'); //done
+$router->get('/tasks', 'TaskController@getAll'); //done
 $router->get('/tasks/(\d+)', 'TaskController@getOne');
-$router->put('/tasks/(\d+)', 'TaskController@update');
-$router->delete('/tasks/(\d+)', 'TaskController@delete');
-$router->put('/tasks/(\d+)/(\w+)', 'TaskController@complete');
+$router->put('/tasks/(\d+)', 'TaskController@update'); 
+$router->delete('/tasks/(\d+)', 'TaskController@delete'); //done
+$router->put('/tasks/(\d+)/(\w+)', 'TaskController@complete'); //done
 $router->get('/share/task/(\d+)', 'TaskController@shareSingle');
 $router->put('/tasks/(\d+)/time', 'TaskController@updateTimeElapsed');
 
@@ -44,15 +44,15 @@ $router->get('/share/list/(\d+)', 'ListController@share');
 
 
 // Admin Analytics endpoints
-$router->get('/analytics/users', 'UserController@getTotalActiveUsers');
-$router->get('/analytics/tasks', 'UserController@getTotalTasks');
-$router->get('/analytics/tasks/completed', 'UserController@getTotalCompletedTasks');
+$router->get('/analytics/users', 'UserController@getTotalActiveUsers'); //done
+$router->get('/analytics/tasks', 'UserController@getTotalTasks'); //done
+$router->get('/analytics/tasks/completed', 'UserController@getTotalCompletedTasks'); //done
 
 
 // userAnalytics endpoints
-$router->get('/analytics/tasks/(\d+)', 'UserController@getTotalTasksForUser');
-$router->get('/analytics/tasks/completed/(\d+)', 'UserController@getTotalCompletedTasksForUser');
-
+$router->get('/analytics/tasks/(\d+)', 'UserController@getTotalTasksForUser'); //done
+$router->get('/analytics/tasks/completed/(\d+)', 'UserController@getTotalCompletedTasksForUser'); //done
+ 
 
 // Run it!
 $router->run();
