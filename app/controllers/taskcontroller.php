@@ -68,6 +68,7 @@ class TaskController extends Controller
 
     function update($id)
     {
+        
         try {
             $decoded = $this->checkForJwt();
             if (!$decoded) {
@@ -130,11 +131,8 @@ class TaskController extends Controller
     function shareSingle($id)
     {
         try {
-            $decoded = $this->checkForJwt();
-            if (!$decoded) {
-                return;
-            }
-            $sharedTask = $this->service->getOne($decoded->data->id, $id);
+            
+            $sharedTask = $this->service->getOne($id);
             if (!$sharedTask) {
                 $this->respondWithError(404, 'Task not found');
                 return;

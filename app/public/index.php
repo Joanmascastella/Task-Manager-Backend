@@ -26,11 +26,11 @@ $router->post('/refresh-token', 'UserController@refreshToken'); //done
 // Task Management endpoints
 $router->post('/tasks', 'TaskController@create'); //done
 $router->get('/tasks', 'TaskController@getAll'); //done
-$router->get('/tasks/(\d+)', 'TaskController@getOne');
-$router->put('/tasks/(\d+)', 'TaskController@update'); 
+$router->get('/tasks/(\d+)', 'TaskController@getOne'); // done
+$router->put('/tasks/(\d+)', 'TaskController@update'); // done 
 $router->delete('/tasks/(\d+)', 'TaskController@delete'); //done
 $router->put('/tasks/(\d+)/(\w+)', 'TaskController@complete'); //done
-$router->get('/share/task/(\d+)', 'TaskController@shareSingle');
+$router->get('/share/task/(\d+)', 'TaskController@shareSingle'); //done
 $router->put('/tasks/(\d+)/time', 'TaskController@updateTimeElapsed');
 
 // List Management endpoints
