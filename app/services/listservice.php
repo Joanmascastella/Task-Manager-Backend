@@ -46,7 +46,6 @@ class ListService {
     public function getAll($user_id) {
         return $this->repository->getAll($user_id);
     }
-    
 
 }
 

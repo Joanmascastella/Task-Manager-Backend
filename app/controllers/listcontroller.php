@@ -94,11 +94,6 @@ class ListController extends Controller
     function share($list_id)
     {
         try {
-            $decoded = $this->checkForJwt();
-            if (!$decoded) {
-                return;
-            }
-
             $tasks = $this->service->share($list_id);
             if (!empty($tasks)) {
                 $this->respond($tasks);

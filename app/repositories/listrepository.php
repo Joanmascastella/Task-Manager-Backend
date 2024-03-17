@@ -39,16 +39,32 @@ class ListRepository extends Repository
     }
 
     // Delete a list
-    public function delete($list_id)
+    function delete($list_id)
     {
         try {
+
+            $this->removeListIdFromTasks($list_id);
+
+            // Delete the list
             $stmt = $this->connection->prepare("DELETE FROM Lists WHERE list_id = :list_id");
             $stmt->bindParam(':list_id', $list_id);
             $stmt->execute();
 
             return $stmt->rowCount();
         } catch (PDOException $e) {
+            // Handle exceptions
+        }
+    }
 
+    // Function to remove list ID from associated tasks
+    private function removeListIdFromTasks($list_id)
+    {
+        try {
+            $stmt = $this->connection->prepare("UPDATE Tasks SET list_id = NULL WHERE list_id = :list_id");
+            $stmt->bindParam(':list_id', $list_id);
+            $stmt->execute();
+        } catch (PDOException $e) {
+            // Handle exceptions
         }
     }
 
@@ -68,24 +84,27 @@ class ListRepository extends Repository
     }
 
 
+
     // Method to get all tasks for a list
     public function share($list_id)
     {
         try {
             $stmt = $this->connection->prepare("
-              SELECT t.*, l.listname
-              FROM Tasks AS t
-              INNER JOIN Lists AS l ON t.list_id = l.list_id
-              WHERE l.list_id = :list_id
-          ");
+            SELECT t.task_id, t.title, t.description, t.deadline, t.status, l.listname
+            FROM Tasks AS t
+            INNER JOIN Lists AS l ON t.list_id = l.list_id
+            WHERE t.list_id = :list_id
+        ");
             $stmt->bindParam(':list_id', $list_id);
             $stmt->execute();
 
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-
+            error_log($e->getMessage());
+            return [];
         }
     }
+
 
     // Retrieve a single list by its ID with all its tasks
     public function getOne($user_id, $list_id)
@@ -132,7 +151,7 @@ class ListRepository extends Repository
             $lists = [];
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $listId = $row['list_id'];
-                if (!isset($lists[$listId])) {
+                if (!isset ($lists[$listId])) {
                     $lists[$listId] = [
                         'list_id' => $row['list_id'],
                         'listname' => $row['listname'],
