@@ -117,7 +117,7 @@ class ListRepository extends Repository
     {
         try {
             $stmt = $this->connection->prepare("
-            SELECT l.list_id, l.listname, t.task_id, t.title, t.description, t.deadline, t.status
+            SELECT l.list_id, l.listname, t.task_id, t.title, t.description, t.deadline, t.status, t.time_elapsed
             FROM Lists l
             LEFT JOIN Tasks t ON l.list_id = t.list_id
             WHERE l.user_id = :user_id
@@ -142,7 +142,8 @@ class ListRepository extends Repository
                         'title' => $row['title'],
                         'description' => $row['description'],
                         'deadline' => $row['deadline'],
-                        'status' => $row['status']
+                        'status' => $row['status'],
+                        'time_elapsed' => $row['time_elapsed']
                     ];
                 }
             }
