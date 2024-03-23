@@ -233,7 +233,7 @@ class UserController extends Controller
     public function generateJWT($user)
 {
     $issuedAt = time();
-    $accessExpire = $issuedAt + 3600; // 1 hour for access token
+    $accessExpire = $issuedAt + 5600; // 1 hour for access token
     $refreshExpire = $issuedAt + 1209600; // 2 weeks for refresh token
 
     $accessToken = JWT::encode([

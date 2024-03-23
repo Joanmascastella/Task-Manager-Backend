@@ -133,7 +133,7 @@ class TaskRepository extends Repository
     public function updateTimeElapsed($task_id, $timeElapsed)
     {
         try {
-            $stmt = $this->connection->prepare("UPDATE Tasks SET time_elapsed = :time_elapsed WHERE task_id = :task_id");
+            $stmt = $this->connection->prepare("UPDATE Tasks SET time_elapsed = time_elapsed + :time_elapsed WHERE task_id = :task_id");
             $stmt->bindParam(':time_elapsed', $timeElapsed);
             $stmt->bindParam(':task_id', $task_id);
             $stmt->execute();

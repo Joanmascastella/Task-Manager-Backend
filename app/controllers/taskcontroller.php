@@ -152,6 +152,7 @@ class TaskController extends Controller
             }
             
             $taskData = $this->createObjectFromPostedJson("Models\\Task");
+            $taskData->task_id = $task_id;
             $updateCount = $this->service->updateTimeElapsed($task_id, $taskData->time_elapsed);
             if ($updateCount > 0) {
                 $this->respond(['message' => 'Task time updated successfully']);

@@ -32,7 +32,7 @@ $router->delete('/tasks/(\d+)', 'TaskController@delete'); //done
 $router->put('/tasks/(\d+)/(\w+)', 'TaskController@complete'); //done
 $router->get('/share/task/(\d+)', 'TaskController@shareSingle'); // done maybe delete this feature
 
-$router->put('/tasks/(\d+)/time', 'TaskController@updateTimeElapsed');
+$router->put('/tasks/time/(\d+)', 'TaskController@updateTimeElapsed'); 
 
 // List Management endpoints
 $router->post('/lists', 'ListController@create'); // done
