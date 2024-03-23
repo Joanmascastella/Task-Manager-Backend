@@ -55,7 +55,7 @@ class TaskController extends Controller
             if (!$decoded) {
                 return;
             }
-            $task = $this->service->getOne($decoded->data->id, $id);
+            $task = $this->service->getOne($decoded->data->id);
             if (!$task) {
                 $this->respondWithError(404, 'Task not found');
                 return;
