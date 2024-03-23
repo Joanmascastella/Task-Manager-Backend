@@ -30,7 +30,6 @@ $router->get('/tasks/(\d+)', 'TaskController@getOne'); // done
 $router->put('/tasks/(\d+)', 'TaskController@update'); // done 
 $router->delete('/tasks/(\d+)', 'TaskController@delete'); //done
 $router->put('/tasks/(\d+)/(\w+)', 'TaskController@complete'); //done
-$router->get('/share/task/(\d+)', 'TaskController@shareSingle'); // done maybe delete this feature
 
 $router->put('/tasks/time/(\d+)', 'TaskController@updateTimeElapsed'); 
 
@@ -41,7 +40,6 @@ $router->get('/lists/(\d+)', 'ListController@getOne'); // done
 $router->put('/lists/(\d+)', 'ListController@update'); // done
 $router->delete('/lists/(\d+)', 'ListController@delete'); // done
 $router->post('/lists/(\d+)/tasks', 'ListController@addTask'); // done
-$router->get('/share/list/(\d+)', 'ListController@share'); // done maybe delete this feature
 
 
 // Admin Analytics endpoints

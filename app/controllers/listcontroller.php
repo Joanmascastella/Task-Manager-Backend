@@ -91,20 +91,6 @@ class ListController extends Controller
         }
     }
 
-    function share($list_id)
-    {
-        try {
-            $tasks = $this->service->share($list_id);
-            if (!empty($tasks)) {
-                $this->respond($tasks);
-            } else {
-                $this->respondWithError(404, 'List not found or no tasks to share');
-            }
-        } catch (Exception $e) {
-            $this->respondWithError(500, $e->getMessage());
-        }
-    }
-
     function getOne($list_id) {
         try {
             $decoded = $this->checkForJwt();

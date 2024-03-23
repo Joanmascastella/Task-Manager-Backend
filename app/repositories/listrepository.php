@@ -84,28 +84,6 @@ class ListRepository extends Repository
     }
 
 
-
-    // Method to get all tasks for a list
-    public function share($list_id)
-    {
-        try {
-            $stmt = $this->connection->prepare("
-            SELECT t.task_id, t.title, t.description, t.deadline, t.status, l.listname
-            FROM Tasks AS t
-            INNER JOIN Lists AS l ON t.list_id = l.list_id
-            WHERE t.list_id = :list_id
-        ");
-            $stmt->bindParam(':list_id', $list_id);
-            $stmt->execute();
-
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            error_log($e->getMessage());
-            return [];
-        }
-    }
-
-
     // Retrieve a single list by its ID with all its tasks
     public function getOne($user_id, $list_id)
     {

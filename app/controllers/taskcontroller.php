@@ -125,23 +125,6 @@ class TaskController extends Controller
             $this->respondWithError(500, $e->getMessage());
         }
     }
-    
-
-
-    function shareSingle($id)
-    {
-        try {
-            
-            $sharedTask = $this->service->getOne($id);
-            if (!$sharedTask) {
-                $this->respondWithError(404, 'Task not found');
-                return;
-            }
-            $this->respond($sharedTask);
-        } catch (Exception $e) {
-            $this->respondWithError(500, $e->getMessage());
-        }
-    }
 
     public function updateTimeElapsed($task_id)
     {

@@ -34,11 +34,6 @@ class ListService {
         return $this->repository->addTask($list_id, $task_id);
     }
 
-
-    public function share($list_id) {
-        return $this->repository->share($list_id);
-    }
-
     public function getOne($user_id, $list_id) {
         return $this->repository->getOne($user_id, $list_id);
     }
