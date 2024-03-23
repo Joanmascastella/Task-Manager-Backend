@@ -31,15 +31,16 @@ class TaskRepository extends Repository
     function getAll($user_id)
     {
         try {
-            $stmt = $this->connection->prepare("SELECT * FROM Tasks WHERE user_id = :user_id ORDER BY list_id");
+            $stmt = $this->connection->prepare("SELECT * FROM Tasks WHERE user_id = :user_id AND status != 'completed' ORDER BY list_id");
             $stmt->bindParam(':user_id', $user_id);
             $stmt->execute();
-
+    
             return $stmt->fetchAll(PDO::FETCH_CLASS, 'Models\Task');
         } catch (PDOException $e) {
-
+            // Handle exceptions here
         }
     }
+    
 
     // Update a task
     function update(Task $task)
