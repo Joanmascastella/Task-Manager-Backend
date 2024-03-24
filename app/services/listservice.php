@@ -38,9 +38,10 @@ class ListService {
         return $this->repository->getOne($user_id, $list_id);
     }
     
-    public function getAll($user_id) {
-        return $this->repository->getAll($user_id);
+    public function getAll($user_id, $limit = 10, $offset = 0) {
+        return $this->repository->getAll($user_id, $limit, $offset);
     }
+    
 
 }
 

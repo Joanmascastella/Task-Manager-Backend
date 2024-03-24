@@ -17,30 +17,49 @@ class TaskRepository extends Repository
             $stmt->bindParam(':title', $task->title);
             $stmt->bindParam(':description', $task->description);
             $stmt->bindParam(':deadline', $task->deadline);
-            $stmt->bindParam(':status', $task->status);
-            $stmt->bindParam(':list_id', $task->list_id);
+            $pendingStatus = 'Pending';
+            $stmt->bindParam(':status', $pendingStatus);
+    
+            // Check if list_id is not set or set to 0, and set it to NULL
+            $listId = (!empty($task->list_id) && $task->list_id > 0) ? $task->list_id : null;
+            $stmt->bindParam(':list_id', $listId);
+    
             $stmt->execute();
-
             return $this->connection->lastInsertId();
         } catch (PDOException $e) {
-
+            return false;
         }
     }
+    
+    
 
     // Retrieve all tasks for a user
-    function getAll($user_id)
-    {
-        try {
-            $stmt = $this->connection->prepare("SELECT * FROM Tasks WHERE user_id = :user_id AND status != 'completed' ORDER BY list_id");
-            $stmt->bindParam(':user_id', $user_id);
-            $stmt->execute();
-    
-            return $stmt->fetchAll(PDO::FETCH_CLASS, 'Models\Task');
-        } catch (PDOException $e) {
-            // Handle exceptions here
-        }
+    function getAll($user_id, $limit, $offset)
+{
+    try {
+        $stmt = $this->connection->prepare("
+            SELECT * FROM Tasks 
+            WHERE user_id = :user_id 
+            AND (status != 'completed' OR status IS NULL) 
+            AND (list_id IS NOT NULL OR list_id IS NULL)
+            ORDER BY list_id ASC, deadline ASC
+            LIMIT :limit OFFSET :offset
+        ");
+
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_CLASS, 'Models\Task');
+    } catch (PDOException $e) {
+        error_log($e->getMessage());
+        return [];
     }
-    
+}
+
+
 
     // Update a task
     function update(Task $task)
@@ -57,6 +76,7 @@ class TaskRepository extends Repository
 
             return $stmt->rowCount();
         } catch (PDOException $e) {
+            return false;
         }
     }
 
@@ -85,7 +105,7 @@ class TaskRepository extends Repository
 
             return $stmt->rowCount();
         } catch (PDOException $e) {
-
+            return false;
         }
     }
 
@@ -111,7 +131,8 @@ class TaskRepository extends Repository
         }
     }
 
-    function shareOne($task_id){
+    function shareOne($task_id)
+    {
         try {
             $stmt = $this->connection->prepare("SELECT * FROM Tasks WHERE task_id = :task_id LIMIT 1");
             $stmt->bindParam(':task_id', $task_id);
@@ -141,6 +162,7 @@ class TaskRepository extends Repository
 
             return $stmt->rowCount();
         } catch (PDOException $e) {
+            return false;
         }
     }
 }

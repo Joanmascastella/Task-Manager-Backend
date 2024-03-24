@@ -54,9 +54,9 @@ class UserService
         return $this->repository->getOne($user_id);
     }
 
-    public function getAll()
+    public function getAll($limit, $offset)
     {
-        return $this->repository->getAll();
+        return $this->repository->getAll($limit, $offset);
     }
 
     public function getUserById($userId)

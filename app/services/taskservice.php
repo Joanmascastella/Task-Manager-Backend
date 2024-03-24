@@ -21,9 +21,9 @@ class TaskService
     }
 
     // Retrieve all tasks for a user
-    public function getAll($user_id)
+    public function getAll($user_id, $limit, $offset)
     {
-        return $this->repository->getAll($user_id);
+        return $this->repository->getAll($user_id, $limit, $offset);
     }
 
     // Retrieve a single task by its ID

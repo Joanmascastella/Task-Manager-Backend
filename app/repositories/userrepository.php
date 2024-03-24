@@ -126,16 +126,24 @@ class UserRepository extends Repository
             // Handle exception
         }
     }
-    public function getAll()
+    
+    public function getAll($limit = 10, $offset = 0)
     {
         try {
-            $stmt = $this->connection->prepare("SELECT user_id, email, name, role FROM Users");
+          
+            $stmt = $this->connection->prepare("SELECT user_id, email, name, role FROM Users LIMIT :limit OFFSET :offset");
+            
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+     
             $stmt->execute();
+   
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             error_log($e->getMessage());
             return [];
         }
     }
+    
 
 }

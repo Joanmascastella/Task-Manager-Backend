@@ -113,19 +113,22 @@ class ListRepository extends Repository
     }
 
     // Retrieve all lists for the given user_id with their tasks
-    public function getAll($user_id)
+    public function getAll($user_id, $limit = 10, $offset = 0)
     {
         try {
             $stmt = $this->connection->prepare("
-            SELECT l.list_id, l.listname, t.task_id, t.title, t.description, t.deadline, t.status, t.time_elapsed
-            FROM Lists l
-            LEFT JOIN Tasks t ON l.list_id = t.list_id
-            WHERE l.user_id = :user_id
-            ORDER BY l.list_id, t.task_id
-        ");
-            $stmt->bindParam(':user_id', $user_id);
+                SELECT l.list_id, l.listname, t.task_id, t.title, t.description, t.deadline, t.status, t.time_elapsed
+                FROM Lists l
+                LEFT JOIN Tasks t ON l.list_id = t.list_id
+                WHERE l.user_id = :user_id
+                ORDER BY l.list_id, t.task_id
+                LIMIT :limit OFFSET :offset
+            ");
+            $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
             $stmt->execute();
-
+    
             $lists = [];
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $listId = $row['list_id'];
@@ -147,13 +150,13 @@ class ListRepository extends Repository
                     ];
                 }
             }
-
+    
             return array_values($lists);
         } catch (PDOException $e) {
             error_log($e->getMessage());
             return [];
         }
     }
-
+    
 }
 ?>

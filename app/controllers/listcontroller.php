@@ -109,18 +109,22 @@ class ListController extends Controller
         }
     }
     
-    function getAll() {
+    public function getAll() {
         try {
             $decoded = $this->checkForJwt();
             if (!$decoded) {
                 return;
             }
-    
-            $lists = $this->service->getAll($decoded->data->id);
+            
+            $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10; 
+            $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0; 
+            
+            $lists = $this->service->getAll($decoded->data->id, $limit, $offset);
             $this->respond($lists);
         } catch (Exception $e) {
             $this->respondWithError(500, $e->getMessage());
         }
     }
+    
     
 }

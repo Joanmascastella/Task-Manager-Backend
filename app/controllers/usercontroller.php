@@ -42,9 +42,14 @@ class UserController extends Controller
             $this->respondWithError(401, "Invalid Login");
             return;
         }
+        try {
+            $tokenResponse = $this->generateJWT($user);
+            $this->respond($tokenResponse);
+        } catch (Exception $e) {
+            $this->respondWithError(500, $e->getMessage());
+        }
 
-        $tokenResponse = $this->generateJWT($user);
-        $this->respond($tokenResponse);
+
     }
 
 
@@ -55,7 +60,7 @@ class UserController extends Controller
             $this->respondWithError(403, "Forbidden - You can only update your own account unless you're an admin.");
             return;
         }
-    
+
         try {
             $userData = $this->createObjectFromPostedJson("Models\\User");
             $userData->user_id = $user_id;
@@ -63,10 +68,9 @@ class UserController extends Controller
             $this->respond($user);
         } catch (Exception $e) {
             $this->respondWithError(500, $e->getMessage());
-            return;
         }
     }
-    
+
 
     public function delete($user_id)
     {
@@ -81,7 +85,6 @@ class UserController extends Controller
             $this->service->delete($user_id);
         } catch (Exception $e) {
             $this->respondWithError(500, $e->getMessage());
-            return;
         }
 
         $this->respond(['success' => true]);
@@ -98,7 +101,6 @@ class UserController extends Controller
             $this->respondWithError(403, "Forbidden - You can only access your own account.");
             return;
         }
-
         try {
             $user = $this->service->getOne($user_id);
             if ($user) {
@@ -125,7 +127,11 @@ class UserController extends Controller
                 return;
             }
 
-            $users = $this->service->getAll();
+            $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10; 
+            $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0; 
+    
+
+            $users = $this->service->getAll($limit, $offset);
             $this->respond($users);
         } catch (Exception $e) {
             $this->respondWithError(500, $e->getMessage());
@@ -136,57 +142,77 @@ class UserController extends Controller
     {
         $data = json_decode(file_get_contents('php://input'), true);
         $refreshToken = $data['refreshToken'];
-    
+
         try {
             $decoded = JWT::decode($refreshToken, new Key($this->jwtSecret, 'HS256'));
             $userId = $decoded->data->id;
             $user = $this->service->getUserById($userId);
-    
+
             if (!$user) {
                 $this->respondWithError(401, "Invalid user");
                 return;
             }
-    
+
             $tokenResponse = $this->generateJWT($user);
             $this->respond($tokenResponse);
-    
+
         } catch (Exception $e) {
             $this->respondWithError(401, "Invalid token");
         }
     }
-    function getTotalActiveUsers(){
+    function getTotalActiveUsers()
+    {
         $decoded = $this->checkForJwt();
         if (!($decoded->data->role == "admin")) {
             $this->respondWithError(403, "Forbidden - You can only access analytics if admin.");
             return;
         }
+        try {
+            
+            $activeusers = $this->service->getTotalActiveUsers();
+            $this->respond($activeusers);
+        } catch (Exception $e) {
+            $this->respondWithError(500, $e->getMessage());
+        }
 
-        $activeusers = $this->service->getTotalActiveUsers();
-        $this->respond($activeusers);
+
     }
 
-    function getTotalTasks(){
+    function getTotalTasks()
+    {
         $decoded = $this->checkForJwt();
         if (!($decoded->data->role == "admin")) {
             $this->respondWithError(403, "Forbidden - You can only access analytics if admin.");
             return;
         }
-        $totaltasks = $this->service->getTotalTasks();
-        $this->respond($totaltasks);
+        try {
+            $totaltasks = $this->service->getTotalTasks();
+            $this->respond($totaltasks);
+        } catch (Exception $e) {
+            $this->respondWithError(500, $e->getMessage());
+        }
+
     }
 
-    function getTotalCompletedTasks(){
+    function getTotalCompletedTasks()
+    {
         $decoded = $this->checkForJwt();
         if (!($decoded->data->role == "admin")) {
             $this->respondWithError(403, "Forbidden - You can only access analytics if admin.");
             return;
         }
-        $totalcompleted = $this->service->getTotalCompletedTasks();
-        $this->respond($totalcompleted);
+        try {
+            $totalcompleted = $this->service->getTotalCompletedTasks();
+            $this->respond($totalcompleted);
+        } catch (Exception $e) {
+            $this->respondWithError(500, $e->getMessage());
+        }
+
     }
 
 
-    function getTotalTasksForUser($id){
+    function getTotalTasksForUser($id)
+    {
         $decoded = $this->checkForJwt();
 
         if ($decoded->data->id != $id) {
@@ -207,8 +233,9 @@ class UserController extends Controller
 
     }
 
-    function getTotalCompletedTasksForUser($id){
-        
+    function getTotalCompletedTasksForUser($id)
+    {
+
         $decoded = $this->checkForJwt();
 
         if ($decoded->data->id != $id) {
@@ -226,46 +253,46 @@ class UserController extends Controller
         } catch (Exception $e) {
             $this->respondWithError(500, $e->getMessage());
         }
-        
+
     }
-    
+
 
     public function generateJWT($user)
-{
-    $issuedAt = time();
-    $accessExpire = $issuedAt + 5600; // 1 hour for access token
-    $refreshExpire = $issuedAt + 1209600; // 2 weeks for refresh token
+    {
+        $issuedAt = time();
+        $accessExpire = $issuedAt + 5600; // 1 hour for access token
+        $refreshExpire = $issuedAt + 1209600; // 2 weeks for refresh token
 
-    $accessToken = JWT::encode([
-        "iss" => 'localhost.com',
-        "aud" => 'localhost.com',
-        "iat" => $issuedAt,
-        "nbf" => $issuedAt,
-        "exp" => $accessExpire,
-        "data" => [
-            "id" => $user->user_id,
-            "username" => $user->name,
-            "email" => $user->email,
-            "role" => $user->role
-        ]
-    ], $this->jwtSecret, 'HS256');
+        $accessToken = JWT::encode([
+            "iss" => 'localhost.com',
+            "aud" => 'localhost.com',
+            "iat" => $issuedAt,
+            "nbf" => $issuedAt,
+            "exp" => $accessExpire,
+            "data" => [
+                "id" => $user->user_id,
+                "username" => $user->name,
+                "email" => $user->email,
+                "role" => $user->role
+            ]
+        ], $this->jwtSecret, 'HS256');
 
-    $refreshToken = JWT::encode([
-        "iss" => 'localhost.com',
-        "aud" => 'localhost.com',
-        "iat" => $issuedAt,
-        "exp" => $refreshExpire,
-        "data" => [
-            "id" => $user->user_id
-        ]
-    ], $this->jwtSecret, 'HS256');
+        $refreshToken = JWT::encode([
+            "iss" => 'localhost.com',
+            "aud" => 'localhost.com',
+            "iat" => $issuedAt,
+            "exp" => $refreshExpire,
+            "data" => [
+                "id" => $user->user_id
+            ]
+        ], $this->jwtSecret, 'HS256');
 
-    return [
-        "authToken" => $accessToken,
-        "refreshToken" => $refreshToken,
-        "expiresIn" => $accessExpire
-    ];
-}
+        return [
+            "authToken" => $accessToken,
+            "refreshToken" => $refreshToken,
+            "expiresIn" => $accessExpire
+        ];
+    }
 
 
 }

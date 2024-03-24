@@ -18,16 +18,16 @@ class TaskController extends Controller
 
     function create()
     {
+        $decoded = $this->checkForJwt();
+        if (!$decoded) {
+            return;
+        }
         try {
             $taskData = $this->createObjectFromPostedJson("Models\\Task");
-            $decoded = $this->checkForJwt();
-            if (!$decoded) {
-                return;
-            }
-
             $taskData->user_id = $decoded->data->id;
             $taskId = $this->service->create($taskData);
             $this->respond($taskId);
+
         } catch (Exception $e) {
             $this->respondWithError(500, $e->getMessage());
         }
@@ -40,8 +40,10 @@ class TaskController extends Controller
             if (!$decoded) {
                 return;
             }
+            $limit = isset ($_GET['limit']) ? (int) $_GET['limit'] : 10;
+            $offset = isset ($_GET['offset']) ? (int) $_GET['offset'] : 0;
 
-            $tasks = $this->service->getAll($decoded->data->id);
+            $tasks = $this->service->getAll($decoded->data->id, $limit, $offset);
             $this->respond($tasks);
         } catch (Exception $e) {
             $this->respondWithError(500, $e->getMessage());
@@ -68,7 +70,7 @@ class TaskController extends Controller
 
     function update($id)
     {
-        
+
         try {
             $decoded = $this->checkForJwt();
             if (!$decoded) {
@@ -133,7 +135,7 @@ class TaskController extends Controller
             if (!$decoded) {
                 return;
             }
-            
+
             $taskData = $this->createObjectFromPostedJson("Models\\Task");
             $taskData->task_id = $task_id;
             $updateCount = $this->service->updateTimeElapsed($task_id, $taskData->time_elapsed);
