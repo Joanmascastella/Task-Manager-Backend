@@ -19,8 +19,6 @@ class TaskRepository extends Repository
             $stmt->bindParam(':deadline', $task->deadline);
             $pendingStatus = 'Pending';
             $stmt->bindParam(':status', $pendingStatus);
-    
-            // Check if list_id is not set or set to 0, and set it to NULL
             $listId = (!empty($task->list_id) && $task->list_id > 0) ? $task->list_id : null;
             $stmt->bindParam(':list_id', $listId);
     
