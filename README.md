@@ -1,29 +1,14 @@
-# Docker setup that runs a demo REST api
-This repository provides a helper project for a Vue frontend assignment.
 
-It contains:
-* NGINX webserver
-* PHP FastCGI Process Manager with PDO MySQL support
-* MariaDB (GPL MySQL fork)
-* PHPMyAdmin
 
-## Installation
+**This is the backend of the Task Manager Project for Web Development 2.** The database data can be found under the folder `sql`.
 
-1. Install Docker Desktop on Windows or Mac, or Docker Engine on Linux.
-1. Clone the project
+**Login Information:**
 
-## Usage
+- **Normal User:**
+  - Email: `m@gmail.com`
+  - Password: `marta`
 
-In a terminal, run:
-```bash
-docker-compose up
-```
+- **Admin:**
+  - Email: `joan.idevelop@gmail.com`
+  - Password: `admin`
 
-NGINX will now serve files in the app/public folder. Visit localhost in your browser to check.
-PHPMyAdmin is accessible on localhost:8080
-
-If you want to stop the containers, press Ctrl+C. 
-Or run:
-```bash
-docker-compose down
-```

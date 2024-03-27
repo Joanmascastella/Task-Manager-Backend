@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Mar 12, 2024 at 06:45 PM
+-- Generation Time: Mar 27, 2024 at 05:57 PM
 -- Server version: 11.3.2-MariaDB-1:11.3.2+maria~ubu2204
 -- PHP Version: 8.2.16
 
@@ -35,6 +35,14 @@ CREATE TABLE `Lists` (
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `Lists`
+--
+
+INSERT INTO `Lists` (`list_id`, `user_id`, `listname`, `created_at`, `updated_at`) VALUES
+(15, 9, 'Coding', '2024-03-27 17:50:45', '2024-03-27 17:50:45'),
+(16, 9, 'Finished', '2024-03-27 17:51:12', '2024-03-27 17:51:12');
+
 -- --------------------------------------------------------
 
 --
@@ -53,6 +61,16 @@ CREATE TABLE `Tasks` (
   `list_id` int(11) DEFAULT NULL,
   `time_elapsed` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `Tasks`
+--
+
+INSERT INTO `Tasks` (`task_id`, `user_id`, `title`, `description`, `deadline`, `status`, `created_at`, `updated_at`, `list_id`, `time_elapsed`) VALUES
+(53, 9, 'Code Documentation Needs To Get Done', 'I need to add comments and explain my code to my colleagues. Primarily, I implemented the content management system. ', '2024-03-30 00:00:00', 'pending', '2024-03-27 17:50:50', '2024-03-27 17:50:50', 15, 0),
+(54, 9, 'Drawing A Portrait ', 'I need to draw a portrait of my family by Monday next week. The teacher was very specific about the fact that it had to be done in charcoal. ', '2024-04-01 00:00:00', 'completed', '2024-03-27 17:52:13', '2024-03-27 17:56:30', 16, 136),
+(55, 9, 'Study For Math Exam ', 'Study algebra for the coming math exam. ', '2024-04-06 00:00:00', 'pending', '2024-03-27 17:52:50', '2024-03-27 17:52:50', NULL, 0),
+(56, 9, 'Write implementation for checking payment status', 'I need to write a payment implementation with a testing sandbox with utilizing the Mollie API.', '2024-04-18 00:00:00', 'pending', '2024-03-27 17:53:58', '2024-03-27 17:53:58', NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -74,7 +92,6 @@ CREATE TABLE `Users` (
 
 INSERT INTO `Users` (`user_id`, `email`, `name`, `password_hash`, `role`) VALUES
 (6, 'joan.idevelop@gmail.com', 'admin', '$2y$10$AkY.0gqaJzYiHowSPVJJTODU0MJTLBmHPHGXQuKP6YlqsqWz3aaAi', 'admin'),
-(8, 'testt@gmail.com', 'testas', '$2y$10$ZMF9G6ovdDw2Qs.r97b3deMOfnj34nyvSv5e0Y..vZhRc2xzKFMgi', 'user'),
 (9, 'm@gmail.com', 'Marta', '$2y$10$/E3lqUFAYmcbDvhOQnMzs.NVE3ZJ8Zb4gYBmOXFxwCNuX7V9jJX2G', 'user');
 
 --
@@ -111,19 +128,19 @@ ALTER TABLE `Users`
 -- AUTO_INCREMENT for table `Lists`
 --
 ALTER TABLE `Lists`
-  MODIFY `list_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `list_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `Tasks`
 --
 ALTER TABLE `Tasks`
-  MODIFY `task_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `task_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT for table `Users`
 --
 ALTER TABLE `Users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- Constraints for dumped tables
